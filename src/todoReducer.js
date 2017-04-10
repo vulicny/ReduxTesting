@@ -57,7 +57,19 @@ const todoApp = (state = {}, action) => {
 }
 
 
+//combine reducer custom implementation
+const myCombineReducers = (reducers) => {
+    return (state = {}, action) => {
+        return Object.keys(reducers).reduce((nextState, key) => {
+            nextState[key] = reducers[key](state[key], action);
+            return nextState;
+        }, {})
+    }
+};
+
+
 //tests
+
 const testAddTodos = () => {
     let action = {
         type: 'ADD_TODO',
@@ -144,7 +156,7 @@ const testTodoApp = () => {
                 finished: false
             }
         ],
-        visibilityFilter:'SHOW_ALL'
+        visibilityFilter: 'SHOW_ALL'
     };
 
     let stateAfter_2 = {
@@ -155,7 +167,7 @@ const testTodoApp = () => {
                 finished: false
             }
         ],
-        visibilityFilter:'SHOW_COMPLETED'
+        visibilityFilter: 'SHOW_COMPLETED'
     };
 
     let action_filter = {
@@ -165,7 +177,61 @@ const testTodoApp = () => {
 
 
     expect(todoApp(stateBefore, action)).toEqual(stateAfter_1);
-    expect(todoApp(stateAfter_1,action_filter )).toEqual(stateAfter_2);
+    expect(todoApp(stateAfter_1, action_filter)).toEqual(stateAfter_2);
+
+}
+
+
+
+const testMyCombineReducers = () => {
+    let action = {
+        type: 'ADD_TODO',
+        id: 0,
+        text: 'my todo',
+        finished: false
+
+    };
+
+    let stateBefore = {
+        todos: [],
+        visibilityFilter: 'SHOW_ALL'
+    };
+
+    let stateAfter_1 = {
+        todos: [
+            {
+                id: 0,
+                text: 'my todo',
+                finished: false
+            }
+        ],
+        visibilityFilter: 'SHOW_ALL'
+    };
+
+    let stateAfter_2 = {
+        todos: [
+            {
+                id: 0,
+                text: 'my todo',
+                finished: false
+            }
+        ],
+        visibilityFilter: 'SHOW_COMPLETED'
+    };
+
+    let action_filter = {
+        type: 'SET_VISIBILITY_FILTER',
+        visibilityFilter: 'SHOW_COMPLETED'
+    };
+
+    const combineReducer = myCombineReducers({
+        todos: todos,
+        visibilityFilter: visibilityFilter
+    });
+
+    expect(combineReducer(stateBefore, action)).toEqual(stateAfter_1);
+    expect(combineReducer(stateAfter_1, action_filter)).toEqual(stateAfter_2);
+
 
 }
 
@@ -174,4 +240,9 @@ testAddTodos();
 testToggleTodo();
 testVisibilityFilter();
 testTodoApp();
+testMyCombineReducers();
+
 console.log('All tests passed.');
+
+exports.todos = todos;
+exports.visibilityFilter = visibilityFilter;

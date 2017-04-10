@@ -4,10 +4,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { createStore } from 'redux';
+import {combineReducers} from 'redux';
 import {counter} from './counterReducer.js'
 import MyCounter from "./MyCounter.jsx";
 import {createMyStore} from './myReactStore.js'
-//let store = createStore(counter);
+import {todos, visibilityFilter} from './todoReducer.js'
+
+
+
+const todoApp = combineReducers({
+    todos,
+    visibilityFilter
+});
 
 let store = createMyStore(counter);
 
