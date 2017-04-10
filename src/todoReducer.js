@@ -92,7 +92,7 @@ const testToggleTodo = () => {
     deepFreeze(stateBefore);
     expect(todos(stateBefore, action)).toEqual(stateAfter);
 }
-
+//run the tests
 testAddTodos();
 testToggleTodo();
 console.log('All tests passed.');
