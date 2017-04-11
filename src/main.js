@@ -20,7 +20,7 @@ const todoApp = combineReducers({
 let store = createStore(todoApp);
 
 const render = () => {
-    ReactDOM.render(<TodoApp store={store} todos={store.getState().todos}/>, document.getElementById('app'))
+    ReactDOM.render(<TodoApp store={store} state={store.getState()}/>, document.getElementById('app'))
 };
 render();
 
