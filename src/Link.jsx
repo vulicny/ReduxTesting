@@ -4,6 +4,7 @@
 
 import React from 'react';
 import {connect} from 'react-redux';
+import {setFilterAction} from './todoActions.js'
 
 class Link extends React.Component {
     constructor(props) {
@@ -33,10 +34,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispachToProps = (dispatch, ownProps) => {
     return {
         onFilterClick: () => {
-            dispatch({
-                type: 'SET_VISIBILITY_FILTER',
-                visibilityFilter: ownProps.filter
-            });
+            dispatch(setFilterAction(ownProps.filter));
         }
     }
 }
