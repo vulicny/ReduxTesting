@@ -3,6 +3,7 @@
  */
 
 import React from 'react';
+import {connect} from 'react-redux';
 
 class Link extends React.Component {
     constructor(props) {
@@ -10,15 +11,33 @@ class Link extends React.Component {
     }
 
     render() {
-        if(this.props.active) {
+        const {active, onFilterClick} = this.props;
+        if (active) {
             return (<span>{this.props.children}</span>)
         }
         return (
-            <a href='#' onClick={this.props.onFilterClick}>
+            <a href='#' onClick={onFilterClick}>
                 {this.props.children}
             </a>
 
         );
     }
 }
-export default Link; 
+
+const mapStateToProps = (state, ownProps) => {
+    return {
+        active: (state.visibilityFilter === ownProps.filter)
+    }
+};
+
+const mapDispachToProps = (dispatch, ownProps) => {
+    return {
+        onFilterClick: () => {
+            dispatch({
+                type: 'SET_VISIBILITY_FILTER',
+                visibilityFilter: ownProps.filter
+            });
+        }
+    }
+}
+export default connect(mapStateToProps, mapDispachToProps)(Link);

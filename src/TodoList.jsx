@@ -3,7 +3,8 @@
  */
 
 import React from 'react';
-import Todo from './Todo.jsx'
+import Todo from './Todo.jsx';
+import {connect} from 'react-redux';
 
 class TodoList extends React.Component {
     constructor(props) {
@@ -24,4 +25,34 @@ class TodoList extends React.Component {
     }
 }
 
-export default TodoList;
+const getVisibilityTodos = (todos, filter) => {
+    switch (filter) {
+        case 'SHOW_ALL' :
+            return todos;
+        case 'SHOW_ACTIVE' :
+            return todos.filter(t => !t.finished);
+        case 'SHOW_FINISHED' :
+            return todos.filter(t => t.finished);
+        default:
+            return todos;
+    }
+};
+
+const mapStateToProps = (state) => {
+    return {
+        visibleTodos: getVisibilityTodos(state.todos, state.visibilityFilter)
+    }
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        toggleTodo: (id) => {
+            dispatch({
+                type: 'TOGGLE_TODO',
+                id: id
+            });
+        }
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(TodoList);
