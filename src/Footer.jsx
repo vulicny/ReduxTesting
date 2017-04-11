@@ -20,7 +20,7 @@ class Footer extends React.Component {
                 {' '}
                 <Link filter="SHOW_ACTIVE">Active</Link>
                 {' '}
-                <Link filter="SHOW_FINISHED">Completed</Link>
+                <Link filter="SHOW_COMPLETED">Completed</Link>
 
             </div>
         );
