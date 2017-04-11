@@ -11,6 +11,8 @@ import {createMyStore} from './myReactStore.js'
 import {todos, visibilityFilter} from './todoReducer.js'
 import TodoApp from './TodoApp.jsx'
 import {Provider} from 'react-redux';
+import {loadState, saveState} from './localStorage.js';
+import throttle from 'lodash/throttle';
 
 
 const todoApp = combineReducers({
@@ -26,7 +28,13 @@ const persistedState = {
         finished: false
     }]
 };
-let store = createStore(todoApp, persistedState);
+let store = createStore(todoApp, loadState());
+
+store.subscribe(throttle(() => {
+    saveState({
+        todos: store.getState().todos
+    })
+}, 1000));
 
 ReactDOM.render(
     <Provider store={store}>

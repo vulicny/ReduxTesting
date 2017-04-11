@@ -1,13 +1,12 @@
 /**
  * Created by ulicny on 11.04.2017.
  */
+import { v4 } from 'node-uuid';
 
-//global ID counter - temporary solution
-let globalId = 1;
 
 const addTodoAction = (text) => ({
     type: 'ADD_TODO',
-    id: globalId++,
+    id: v4(),
     text: text,
     finished: false
 });
