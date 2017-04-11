@@ -25,17 +25,13 @@ class Link extends React.Component {
     }
 }
 
-const mapStateToProps = (state, ownProps) => {
-    return {
-        active: (state.visibilityFilter === ownProps.filter)
-    }
-};
+const mapStateToProps = (state, ownProps) => ({
+    active: (state.visibilityFilter === ownProps.filter)
+});
 
-const mapDispachToProps = (dispatch, ownProps) => {
-    return {
-        onFilterClick: () => {
-            dispatch(setFilterAction(ownProps.filter));
-        }
+const mapDispachToProps = (dispatch, ownProps) => ({
+    onFilterClick: () => {
+        dispatch(setFilterAction(ownProps.filter));
     }
-}
+});
 export default connect(mapStateToProps, mapDispachToProps)(Link);

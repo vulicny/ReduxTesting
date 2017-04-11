@@ -18,7 +18,15 @@ const todoApp = combineReducers({
     visibilityFilter
 });
 
-let store = createStore(todoApp);
+//default state - just todos here not visibilityFilter
+const persistedState = {
+    todos: [{
+        id: 0,
+        text: 'Welcome to React-Redux',
+        finished: false
+    }]
+};
+let store = createStore(todoApp, persistedState);
 
 ReactDOM.render(
     <Provider store={store}>

@@ -8,12 +8,16 @@ class Todo extends React.Component {
     constructor(props) {
         super(props);
     }
-    render() {
-        const { toggleTodo, text, finished } = this.props;
 
-        return(
+    render() {
+        const {toggleTodo, text, finished} = this.props;
+
+        return (
             <li onClick={toggleTodo}
-                style={{textDecoration: finished ? 'line-through' : 'none'}}>
+                style={{
+                    textDecoration: finished ? 'line-through' : 'none',
+                    color: finished ? 'green' : 'black'
+                }}>
                 {text}
             </li>
         );
