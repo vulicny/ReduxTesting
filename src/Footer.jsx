@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import FilterLink from './FilterLink.jsx'
+import Link from './Link.jsx'
 
 
 class Footer extends React.Component {
@@ -16,11 +16,11 @@ class Footer extends React.Component {
             <div>
                 Show:
                 {' '}
-                <FilterLink filter="SHOW_ALL">All</FilterLink>
+                <Link filter="SHOW_ALL">All</Link>
                 {' '}
-                <FilterLink filter="SHOW_ACTIVE">Active</FilterLink>
+                <Link filter="SHOW_ACTIVE">Active</Link>
                 {' '}
-                <FilterLink filter="SHOW_FINISHED">Completed</FilterLink>
+                <Link filter="SHOW_FINISHED">Completed</Link>
 
             </div>
         );

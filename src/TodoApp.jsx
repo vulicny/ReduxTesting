@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import VisibleTodoList from './VisibleTodoList.jsx'
+import TodoList from './TodoList.jsx'
 import AddTodo from './AddTodo.jsx'
 import Footer from './Footer.jsx'
 
@@ -19,7 +19,7 @@ class TodoApp extends React.Component {
 
                 <AddTodo/>
 
-                <VisibleTodoList/>
+                <TodoList/>
 
                 <Footer/>
 
