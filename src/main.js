@@ -10,6 +10,7 @@ import MyCounter from "./MyCounter.jsx";
 import {createMyStore} from './myReactStore.js'
 import {todos, visibilityFilter} from './todoReducer.js'
 import TodoApp from './TodoApp.jsx'
+import {Provider} from 'react-redux';
 
 
 const todoApp = combineReducers({
@@ -19,12 +20,12 @@ const todoApp = combineReducers({
 
 let store = createStore(todoApp);
 
-const render = () => {
-    ReactDOM.render(<TodoApp store={store} state={store.getState()}/>, document.getElementById('app'))
-};
-render();
+ReactDOM.render(
+    <Provider store={store}>
+        <TodoApp/>
+    </Provider>,
+    document.getElementById('app'));
 
-store.subscribe(render);
 
 /**
  let store = createMyStore(counter);

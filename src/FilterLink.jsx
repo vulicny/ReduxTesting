@@ -2,23 +2,40 @@
  * Created by ulicny on 11.04.2017.
  */
 import React from 'react';
+import Link from './Link.jsx'
 
 class FilterLink extends React.Component {
-    constructor(props) {
+    constructor(props, context) {
         super(props)
+
+        this.setFilter = this.setFilter.bind(this);
+        this.store = context.store;
+    }
+    componentDidMount() {
+        this.unsubscribe = this.store.subscribe(()=>this.forceUpdate());
     }
 
+    componentWillUnmount() {
+        this.unsubscribe();
+    }
+    setFilter(filter) {
+        this.store.dispatch({
+            type:'SET_VISIBILITY_FILTER',
+            visibilityFilter:filter
+        });
+    }
     render() {
-        if(this.props.filter === this.props.currentFilter) {
-            return (<span>{this.props.children}</span>)
-        }
+        const currentFilter = this.store.getState().visibilityFilter;
         return (
-                <a href='#' onClick={()=>this.props.onFilterClick(this.props.filter)}>
+                <Link active={(this.props.filter === currentFilter)}
+                    onFilterClick={()=>this.setFilter(this.props.filter)}>
                     {this.props.children}
-                </a>
-
+                </Link>
         )
     }
 }
+FilterLink.contextTypes = {
+    store: React.PropTypes.object
+};
 
-export  default FilterLink;
+export default FilterLink;
