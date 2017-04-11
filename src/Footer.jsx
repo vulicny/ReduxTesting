@@ -15,14 +15,12 @@ class Footer extends React.Component {
         return (
             <div>
                 Show:
-                <FilterLink onFilterClick={this.props.onFilterClick} currentFilter={this.props.currentFilter}
-                            filter="SHOW_ALL">All</FilterLink>
                 {' '}
-                <FilterLink onFilterClick={this.props.onFilterClick}  currentFilter={this.props.currentFilter}
-                            filter="SHOW_ACTIVE">Active</FilterLink>
+                <FilterLink filter="SHOW_ALL">All</FilterLink>
                 {' '}
-                <FilterLink onFilterClick={this.props.onFilterClick}  currentFilter={this.props.currentFilter}
-                            filter="SHOW_FINISHED">Completed</FilterLink>
+                <FilterLink filter="SHOW_ACTIVE">Active</FilterLink>
+                {' '}
+                <FilterLink filter="SHOW_FINISHED">Completed</FilterLink>
 
             </div>
         );
