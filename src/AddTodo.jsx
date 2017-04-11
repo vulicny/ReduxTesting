@@ -4,9 +4,7 @@
 
 import React from 'react';
 import {connect} from 'react-redux';
-
-//global ID counter - temporary solution
-var globalId = 0;
+import {addTodoAction} from './todoActions.js'
 
 class AddTodo extends React.Component {
     constructor(props) {
@@ -16,12 +14,7 @@ class AddTodo extends React.Component {
     }
 
     addTodo(value) {
-        this.dispatch({
-            type: 'ADD_TODO',
-            id: globalId++,
-            text: value,
-            finished: false
-        })
+        this.dispatch(addTodoAction(value))
     }
 
     render() {

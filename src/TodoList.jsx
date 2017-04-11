@@ -5,6 +5,7 @@
 import React from 'react';
 import Todo from './Todo.jsx';
 import {connect} from 'react-redux';
+import {toggleTodoAction} from './todoActions.js'
 
 class TodoList extends React.Component {
     constructor(props) {
@@ -47,10 +48,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         toggleTodo: (id) => {
-            dispatch({
-                type: 'TOGGLE_TODO',
-                id: id
-            });
+            dispatch(toggleTodoAction(id));
         }
     }
 }
