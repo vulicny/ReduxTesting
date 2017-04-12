@@ -2,8 +2,10 @@
  * Created by ulicny on 07.04.2017.
  */
 
+import {combineReducers} from 'redux';
 let expect = require('expect');
 let deepFreeze = require('deep-freeze');
+
 
 const todo = (state, action) => {
     switch (action.type) {
@@ -49,13 +51,20 @@ const visibilityFilter = (state = 'SHOW_ALL', action) => {
 
 };
 
+//main reducer
+const todoAppReducer = combineReducers({
+    todos,
+    visibilityFilter
+});
+
+
+
 const todoApp = (state = {}, action) => {
     return {
         todos: todos(state.todos, action),
         visibilityFilter: visibilityFilter(state.visibilityFilter, action)
     }
 }
-
 
 //combine reducer custom implementation
 const myCombineReducers = (reducers) => {
@@ -246,3 +255,4 @@ console.log('All tests passed.');
 
 exports.todos = todos;
 exports.visibilityFilter = visibilityFilter;
+export {todoAppReducer}
