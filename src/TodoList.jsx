@@ -5,6 +5,7 @@
 import React from 'react';
 import Todo from './Todo.jsx';
 import {connect} from 'react-redux';
+import { withRouter } from 'react-router';
 import {toggleTodoAction} from './todoActions.js'
 
 class TodoList extends React.Component {
@@ -28,19 +29,19 @@ class TodoList extends React.Component {
 
 const getVisibilityTodos = (todos, filter) => {
     switch (filter) {
-        case 'SHOW_ALL' :
+        case 'all' :
             return todos;
-        case 'SHOW_ACTIVE' :
+        case 'active' :
             return todos.filter(t => !t.finished);
-        case 'SHOW_COMPLETED' :
+        case 'completed' :
             return todos.filter(t => t.finished);
         default:
-            return todos;
+            throw new Error('Unknown filter: ${filter}');
     }
 };
 
-const mapStateToProps = (state) => ({
-    visibleTodos: getVisibilityTodos(state.todos, state.visibilityFilter)
+const mapStateToProps = (state, ownProps) => ({
+    visibleTodos: getVisibilityTodos(state.todos, ownProps.match.params.filter || 'all')
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -50,4 +51,8 @@ const mapDispatchToProps = (dispatch) => ({
 
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(TodoList);
+export default withRouter(
+    connect(
+        mapStateToProps,
+        mapDispatchToProps)
+    (TodoList));
