@@ -7,6 +7,7 @@ import Todo from './Todo.jsx';
 import {connect} from 'react-redux';
 import { withRouter } from 'react-router';
 import {toggleTodoAction} from './todoActions.js'
+import {getVisibilityTodos} from './todoReducer.js';
 
 class TodoList extends React.Component {
     constructor(props) {
@@ -27,21 +28,8 @@ class TodoList extends React.Component {
     }
 }
 
-const getVisibilityTodos = (todos, filter) => {
-    switch (filter) {
-        case 'all' :
-            return todos;
-        case 'active' :
-            return todos.filter(t => !t.finished);
-        case 'completed' :
-            return todos.filter(t => t.finished);
-        default:
-            throw new Error('Unknown filter: ${filter}');
-    }
-};
-
 const mapStateToProps = (state, ownProps) => ({
-    visibleTodos: getVisibilityTodos(state.todos, ownProps.match.params.filter || 'all')
+    visibleTodos: getVisibilityTodos(state, ownProps.match.params.filter || 'all')
 });
 
 const mapDispatchToProps = (dispatch) => ({
