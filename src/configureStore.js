@@ -1,46 +1,68 @@
 /**
  * Created by ulicny on 12.04.2017.
  */
-import {createStore} from 'redux';
+import {createStore, applyMiddleware} from 'redux';
 import {todoAppReducer} from './mainReducer.js';
-import {loadState, saveState} from './localStorage.js';
-import throttle from 'lodash/throttle';
+import promise from 'redux-promise';
+import logger from 'redux-logger';
 
+
+
+const wrapDispatchWithMiddlewares = (store, middlewares) => {
+    middlewares.slice().reverse().forEach((middleware) => {
+        store.dispatch = middleware(store);
+    })
+};
+
+/*
+const logger = (store) => {
+    let nextDispatch = store.dispatch;
+
+    if (!console.group) {
+        return nextDispatch;
+    }
+    return (action) => {
+        console.group(action.type);
+        console.log('%c prev state', 'color: gray', store.getState());
+        console.log('%c action', 'color: blue', action);
+        const returnValue = nextDispatch(action);
+        console.log('%c nextDispatch state', 'color: green', store.getState());
+        console.groupEnd(action.type);
+        return returnValue;
+    }
+
+};
+
+*/
+/*
+const promise = (store) => {
+    let nextDispatch = store.dispatch;
+    return (action) => {
+        if (typeof action.then === 'function') {
+            return action.then((response) => {
+                return nextDispatch(response);
+            })
+        }
+        return nextDispatch(action);
+    }
+
+};
+*/
 
 const configureStore = () => {
 
-    const persistedState = loadState();
-    let store = createStore(
-        todoAppReducer,
-        persistedState
-    );
+        let middlewares = [promise];
 
-    const addLoggingToDispatch = (store) => {
-        const rawDispatch = store.dispatch;
-        if (!console.group) {
-            return rawDispatch;
+        if (process.env.NODE_ENV !== 'production') {
+            middlewares.push(logger)
         }
-        return (action) => {
-            console.group(action.type);
-            console.log('%c prev state', 'color: gray', store.getState());
-            console.log('%c action', 'color: blue', action);
-            const returnValue = rawDispatch(action);
-            console.log('%c next state', 'color: green', store.getState());
-            console.groupEnd(action.type);
-            return returnValue;
-        }
-    };
+        let store = createStore(
+            todoAppReducer,
+            applyMiddleware(...middlewares)
+        );
 
-    if (process.env.NODE_ENV !== 'production') {
-        store.dispatch = addLoggingToDispatch(store);
+        return store;
     }
-    store.subscribe(throttle(() => {
-        saveState({
-            todos: store.getState().todos
-        })
-    }, 1000));
-
-    return store;
-};
+;
 
 export {configureStore};

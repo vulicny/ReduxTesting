@@ -3,6 +3,7 @@
  */
 let expect = require('expect');
 let deepFreeze = require('deep-freeze');
+import {combineReducers} from 'redux';
 
 
 const todo = (state, action) => {
@@ -24,31 +25,47 @@ const todo = (state, action) => {
     }
 };
 
-const todos = (state = [], action) => {
+const byId = (state = {}, action) => {
     switch (action.type) {
-        case 'ADD_TODO' :
-            return [
-                ...state,
-                todo(undefined, action)
-            ];
-        case 'TOGGLE_TODO':
-            return state.map((item) => todo(item, action));
+        case 'RECEIVE_TODOS' :
+            let nextState = {...state};
+            action.response.forEach(todo => {
+                nextState[todo.id] = todo;
+            });
+            return nextState;
         default:
             return state;
     }
 };
 
-export const getVisibilityTodos = (state, filter) => {
-    switch (filter) {
-        case 'all' :
-            return state.todos;
-        case 'active' :
-            return state.todos.filter(t => !t.finished);
-        case 'completed' :
-            return state.todos.filter(t => t.finished);
-        default:
-            throw new Error('Unknown filter: ${filter}');
+const createList = (filter) => {
+    return (state = [], action) => {
+        if (action.filter !== filter) {
+            return state;
+        }
+        switch (action.type) {
+            case 'RECEIVE_TODOS' :
+                return action.response.map(todo => todo.id);
+            default:
+                return state;
+        }
     }
+};
+
+const idsByFilter = combineReducers({
+    all: createList("all"),
+    active: createList('active'),
+    completed: createList('completed'),
+});
+
+const todos = combineReducers({
+    byId,
+    idsByFilter
+});
+
+export const getVisibilityTodos = (state, filter) => {
+    const ids = state.todos.idsByFilter[filter];
+    return ids.map((id) => state.todos.byId[id]);
 };
 
 //tests
@@ -61,14 +78,17 @@ const testAddTodos = () => {
         finished: false
 
     }
-    let stateBefore = [];
-    let stareAfter = [
-        {
-            id: 0,
-            text: 'my todo',
-            finished: false
+    let stateBefore = {};
+    let stareAfter = {
+        allIds: [0],
+        byId: {
+            0: {
+                id: 0,
+                text: 'my todo',
+                finished: false
+            }
         }
-    ]
+    }
     deepFreeze(stateBefore);
     expect(todos(stateBefore, action)).toEqual(stareAfter);
 }
@@ -78,37 +98,33 @@ const testToggleTodo = () => {
         type: 'TOGGLE_TODO',
         id: 0
     }
-    let stateBefore = [
-        {
-            id: 0,
-            text: 'my todo',
-            finished: false
-        },
-        {
-            id: 1,
-            text: 'my todo 1',
-            finished: false
+    let stateBefore = {
+        allIds: [0],
+        byId: {
+            0: {
+                id: 0,
+                text: 'my todo',
+                finished: false
+            }
         }
-    ];
-    let stateAfter = [
-        {
-            id: 0,
-            text: 'my todo',
-            finished: true
-        },
-        {
-            id: 1,
-            text: 'my todo 1',
-            finished: false
+    };
+    let stateAfter = {
+        allIds: [0],
+        byId: {
+            0: {
+                id: 0,
+                text: 'my todo',
+                finished: true
+            }
         }
-    ];
+    };
     deepFreeze(stateBefore);
     expect(todos(stateBefore, action)).toEqual(stateAfter);
 }
 
 //run the tests
-testAddTodos();
-testToggleTodo();
+// testAddTodos();
+// testToggleTodo();
 
 
 console.log('All tests passed.');

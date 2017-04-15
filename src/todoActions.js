@@ -1,8 +1,20 @@
 /**
  * Created by ulicny on 11.04.2017.
  */
-import { v4 } from 'node-uuid';
+import {v4} from 'node-uuid';
+import * as api from './api';
 
+
+const receiveTodosAction = (filter, response) => ({
+    type: 'RECEIVE_TODOS',
+    filter,
+    response,
+});
+
+const fetchTodos = (filter) =>
+    api.fetchTodos(filter).then(response =>
+        receiveTodosAction(filter, response)
+    );
 
 const addTodoAction = (text) => ({
     type: 'ADD_TODO',
@@ -21,4 +33,4 @@ const setFilterAction = (filter) => ({
     visibilityFilter: filter
 });
 
-export {addTodoAction, toggleTodoAction, setFilterAction};
+export {fetchTodos, addTodoAction, toggleTodoAction, setFilterAction};
