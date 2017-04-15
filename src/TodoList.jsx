@@ -6,8 +6,9 @@ import React from 'react';
 import Todo from './Todo.jsx';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router';
-import {toggleTodoAction, fetchTodos, requestTodosAction} from './todoActions.js'
-import {getVisibilityTodos, getIsFetching} from './reducers/index.js';
+import {toggleTodo, fetchTodos} from './todoActions.js'
+import {getVisibilityTodos, getError,  getIsFetching} from './reducers/index.js';
+import FetchError from "./FetchError.jsx";
 
 class TodoList extends React.Component {
     constructor(props) {
@@ -25,26 +26,31 @@ class TodoList extends React.Component {
     }
 
     fetchData() {
-        const {filter, fetchTodos, requestTodos} = this.props;
-        requestTodos(filter);
+        const {filter, fetchTodos} = this.props;
         fetchTodos(filter);
     }
 
     render() {
-        const {visibleTodos, isFetching, toggleTodo} = this.props;
+        const {visibleTodos, error, isFetching, toggleTodo} = this.props;
 
         if (isFetching && !visibleTodos.length) {
-            return (<p>Loadding ...</p>)
+            return (<p>Loading ...</p>)
         } else {
-            return (
-                <ul>
-                    {visibleTodos.map((todo) => {
-                        return (
-                            <Todo key={todo.id} {...todo} toggleTodo={() => toggleTodo(todo.id)}/>
-                        )
-                    })}
-                </ul>
-            )
+            if (error) {
+                return (
+                    <FetchError errorMessage={error} onRetry={()=>this.fetchData()}/>
+                );
+            } else {
+                return (
+                    <ul>
+                        {visibleTodos.map((todo) => {
+                            return (
+                                <Todo key={todo.id} {...todo} toggleTodo={() => toggleTodo(todo.id)}/>
+                            )
+                        })}
+                    </ul>
+                )
+            }
         }
     }
 }
@@ -53,6 +59,7 @@ const mapStateToProps = (state, ownProps) => {
     const filter = ownProps.match.params.filter || 'all';
     return {
         visibleTodos: getVisibilityTodos(state, filter),
+        error: getError(state, filter),
         isFetching: getIsFetching(state, filter),
         filter: filter
     }
@@ -60,14 +67,11 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => ({
     toggleTodo: (id) => {
-        dispatch(toggleTodoAction(id));
+        dispatch(toggleTodo(id));
     },
     fetchTodos: (filter) => {
         dispatch(fetchTodos(filter));
     },
-    requestTodos: (filter)=> {
-        dispatch(requestTodosAction(filter))
-    }
 });
 
 export default withRouter(
