@@ -4,6 +4,8 @@
 let expect = require('expect');
 let deepFreeze = require('deep-freeze');
 import {combineReducers} from 'redux';
+import byId, * as fromById from './byId'
+import createList, * as fromList from './createList';
 
 
 const todo = (state, action) => {
@@ -25,34 +27,7 @@ const todo = (state, action) => {
     }
 };
 
-const byId = (state = {}, action) => {
-    switch (action.type) {
-        case 'RECEIVE_TODOS' :
-            let nextState = {...state};
-            action.response.forEach(todo => {
-                nextState[todo.id] = todo;
-            });
-            return nextState;
-        default:
-            return state;
-    }
-};
-
-const createList = (filter) => {
-    return (state = [], action) => {
-        if (action.filter !== filter) {
-            return state;
-        }
-        switch (action.type) {
-            case 'RECEIVE_TODOS' :
-                return action.response.map(todo => todo.id);
-            default:
-                return state;
-        }
-    }
-};
-
-const idsByFilter = combineReducers({
+const listByFilter = combineReducers({
     all: createList("all"),
     active: createList('active'),
     completed: createList('completed'),
@@ -60,12 +35,12 @@ const idsByFilter = combineReducers({
 
 const todos = combineReducers({
     byId,
-    idsByFilter
+    listByFilter
 });
 
 export const getVisibilityTodos = (state, filter) => {
-    const ids = state.todos.idsByFilter[filter];
-    return ids.map((id) => state.todos.byId[id]);
+    const ids = fromList.getIds(state.listByFilter[filter]);
+    return ids.map((id) => fromById.getTodo(state.byId, id));
 };
 
 //tests
@@ -129,5 +104,5 @@ const testToggleTodo = () => {
 
 console.log('All tests passed.');
 
-exports.todos = todos;
+export {todos};
 
