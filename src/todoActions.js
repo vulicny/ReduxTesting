@@ -5,6 +5,11 @@ import {v4} from 'node-uuid';
 import * as api from './api';
 
 
+const requestTodosAction = (filter) => ({
+    type:'REQUEST_TODOS',
+    filter
+});
+
 const receiveTodosAction = (filter, response) => ({
     type: 'RECEIVE_TODOS',
     filter,
@@ -33,4 +38,4 @@ const setFilterAction = (filter) => ({
     visibilityFilter: filter
 });
 
-export {fetchTodos, addTodoAction, toggleTodoAction, setFilterAction};
+export {requestTodosAction, fetchTodos, addTodoAction, toggleTodoAction, setFilterAction};

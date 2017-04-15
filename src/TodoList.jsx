@@ -6,8 +6,8 @@ import React from 'react';
 import Todo from './Todo.jsx';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router';
-import {toggleTodoAction, fetchTodos} from './todoActions.js'
-import {getVisibilityTodos} from './reducers/index.js';
+import {toggleTodoAction, fetchTodos, requestTodosAction} from './todoActions.js'
+import {getVisibilityTodos, getIsFetching} from './reducers/index.js';
 
 class TodoList extends React.Component {
     constructor(props) {
@@ -25,21 +25,27 @@ class TodoList extends React.Component {
     }
 
     fetchData() {
-        const {filter, fetchTodos} = this.props;
+        const {filter, fetchTodos, requestTodos} = this.props;
+        requestTodos(filter);
         fetchTodos(filter);
     }
 
     render() {
-        const {visibleTodos, toggleTodo} = this.props;
-        return (
-            <ul>
-                {visibleTodos.map((todo) => {
-                    return (
-                        <Todo key={todo.id} {...todo} toggleTodo={() => toggleTodo(todo.id)}/>
-                    )
-                })}
-            </ul>
-        )
+        const {visibleTodos, isFetching, toggleTodo} = this.props;
+
+        if (isFetching && !visibleTodos.length) {
+            return (<p>Loadding ...</p>)
+        } else {
+            return (
+                <ul>
+                    {visibleTodos.map((todo) => {
+                        return (
+                            <Todo key={todo.id} {...todo} toggleTodo={() => toggleTodo(todo.id)}/>
+                        )
+                    })}
+                </ul>
+            )
+        }
     }
 }
 
@@ -47,6 +53,7 @@ const mapStateToProps = (state, ownProps) => {
     const filter = ownProps.match.params.filter || 'all';
     return {
         visibleTodos: getVisibilityTodos(state, filter),
+        isFetching: getIsFetching(state, filter),
         filter: filter
     }
 };
@@ -57,6 +64,9 @@ const mapDispatchToProps = (dispatch) => ({
     },
     fetchTodos: (filter) => {
         dispatch(fetchTodos(filter));
+    },
+    requestTodos: (filter)=> {
+        dispatch(requestTodosAction(filter))
     }
 });
 
