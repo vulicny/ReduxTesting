@@ -2,7 +2,7 @@
  * Created by ulicny on 12.04.2017.
  */
 import {createStore, applyMiddleware} from 'redux';
-import {todoAppReducer} from './mainReducer.js';
+import {todoAppReducer} from './reducers/mainReducer.js';
 import promise from 'redux-promise';
 import logger from 'redux-logger';
 
