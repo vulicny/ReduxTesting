@@ -2,40 +2,58 @@
  * Created by ulicny on 11.04.2017.
  */
 import {v4} from 'node-uuid';
+import {getIsFetching} from './reducers/index';
 import * as api from './api';
+import {normalize} from 'normalizr';
+import {todo, arrayOfTodos} from './schema'
 
 
-const requestTodosAction = (filter) => ({
-    type:'REQUEST_TODOS',
-    filter
-});
+const fetchTodos = (filter) => (dispatch, getState) => {
 
-const receiveTodosAction = (filter, response) => ({
-    type: 'RECEIVE_TODOS',
-    filter,
-    response,
-});
+    if (getIsFetching(getState(), filter)) {
+        //skip if it is just fetching for given filter (avoid parallel submits for the same filter on server(API))
+        return Promise.resolve();
+    }
+    dispatch({
+        type: 'FETCH_TODOS_REQUEST',
+        filter
+    });
 
-const fetchTodos = (filter) =>
-    api.fetchTodos(filter).then(response =>
-        receiveTodosAction(filter, response)
+    return api.fetchTodos(filter).then(
+        response => {
+            return dispatch({
+                type: 'FETCH_TODOS_SUCCESS',
+                filter,
+                response: normalize(response, arrayOfTodos),
+            })
+        },
+        error => {
+            return dispatch({
+                type: 'FETCH_TODOS_FAILURE',
+                filter,
+                error: error.message || 'Something went wrong.',
+            });
+        }
     );
+};
 
-const addTodoAction = (text) => ({
-    type: 'ADD_TODO',
-    id: v4(),
-    text: text,
-    finished: false
-});
+const addTodo = (text) => (dispatch) => {
 
-const toggleTodoAction = (id) => ({
-    type: 'TOGGLE_TODO',
-    id: id
-});
+    return api.addTodo(text).then(response => {
+        return dispatch({
+            type: 'ADD_TODO_SUCCESS',
+            response: normalize(response, todo),
+        });
+    });
+};
 
-const setFilterAction = (filter) => ({
-    type: 'SET_VISIBILITY_FILTER',
-    visibilityFilter: filter
-});
+const toggleTodo = (id) => (dispatch) => {
+    return api.toggleTodo(id).then(response => {
+        return dispatch({
+            type: 'TOGGLE_TODO_SUCCESS',
+            response: normalize(response, todo),
+        })
+    })
+};
 
-export {requestTodosAction, fetchTodos, addTodoAction, toggleTodoAction, setFilterAction};
+export {fetchTodos, addTodo, toggleTodo};

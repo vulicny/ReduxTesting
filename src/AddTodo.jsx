@@ -4,7 +4,7 @@
 
 import React from 'react';
 import {connect} from 'react-redux';
-import {addTodoAction} from './todoActions.js'
+import {addTodo} from './todoActions.js'
 
 class AddTodo extends React.Component {
     constructor(props) {
@@ -14,7 +14,7 @@ class AddTodo extends React.Component {
     }
 
     addTodo(value) {
-        this.dispatch(addTodoAction(value))
+        this.dispatch(addTodo(value))
     }
 
     render() {
