@@ -7,7 +7,7 @@ import Todo from './Todo.jsx';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router';
 import {toggleTodoAction, fetchTodos} from './todoActions.js'
-import {getVisibilityTodos} from './todoReducer.js';
+import {getVisibilityTodos} from './reducers/index.js';
 
 class TodoList extends React.Component {
     constructor(props) {
