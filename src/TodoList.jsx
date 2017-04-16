@@ -3,11 +3,14 @@
  */
 
 import React from 'react';
+import {Form} from 'react-bootstrap';
+import {Row}  from 'react-bootstrap';
+import {Col} from 'react-bootstrap';
 import Todo from './Todo.jsx';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router';
 import {toggleTodo, fetchTodos} from './todoActions.js'
-import {getVisibilityTodos, getError,  getIsFetching} from './reducers/index.js';
+import {getVisibilityTodos, getError, getIsFetching} from './reducers/index.js';
 import FetchError from "./FetchError.jsx";
 
 class TodoList extends React.Component {
@@ -34,21 +37,39 @@ class TodoList extends React.Component {
         const {visibleTodos, error, isFetching, toggleTodo} = this.props;
 
         if (isFetching && !visibleTodos.length) {
-            return (<p>Loading ...</p>)
+            return (
+                <div>
+                    <Row> <Col xs={12} md={8}>
+                        <p>Loading ...</p>
+                    </Col>
+                    </Row>
+                </div>
+            )
+
         } else {
             if (error) {
                 return (
-                    <FetchError errorMessage={error} onRetry={()=>this.fetchData()}/>
+                    <div>
+                        <Row> <Col xs={12} md={8}>
+                            <FetchError errorMessage={error} onRetry={() => this.fetchData()}/>
+                        </Col>
+                        </Row></div>
                 );
             } else {
                 return (
-                    <ul>
-                        {visibleTodos.map((todo) => {
-                            return (
-                                <Todo key={todo.id} {...todo} toggleTodo={() => toggleTodo(todo.id)}/>
-                            )
-                        })}
-                    </ul>
+                    <div>
+                        <Row>
+                            <Col xs={12} md={8}>
+                                <ul>
+                                    {visibleTodos.map((todo) => {
+                                        return (
+                                            <Todo key={todo.id} {...todo} toggleTodo={() => toggleTodo(todo.id)}/>
+                                        )
+                                    })}
+                                </ul>
+                            </Col>
+                        </Row>
+                    </div>
                 )
             }
         }

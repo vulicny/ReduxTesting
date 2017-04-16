@@ -3,6 +3,7 @@
  */
 
 import React from 'react';
+import {Col} from 'react-bootstrap';
 import FilterLink from './FilterLink.jsx'
 
 
@@ -14,6 +15,7 @@ class Footer extends React.Component {
     render() {
         return (
             <div>
+                <Col xs={12} md={8}>
                 Show:
                 {' '}
                 <FilterLink filter="all">All</FilterLink>
@@ -21,7 +23,7 @@ class Footer extends React.Component {
                 <FilterLink filter="completed">Completed</FilterLink>
                 {' '}
                 <FilterLink filter="active">Active</FilterLink>
-
+                </Col>
             </div>
         );
     }
