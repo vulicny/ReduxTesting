@@ -19,7 +19,7 @@ const fetchTodos = (filter) => (dispatch, getState) => {
         filter
     });
 
-    return api.fetchTodos(filter).then(
+    return api.fetchTodosRemote(filter).then(
         response => {
             return dispatch({
                 type: 'FETCH_TODOS_SUCCESS',
@@ -37,9 +37,9 @@ const fetchTodos = (filter) => (dispatch, getState) => {
     );
 };
 
-const addTodo = (text) => (dispatch) => {
+const addTodo = (item) => (dispatch) => {
 
-    return api.addTodo(text).then(response => {
+    return api.addTodoRemote(item).then(response => {
         return dispatch({
             type: 'ADD_TODO_SUCCESS',
             response: normalize(response, todo),
@@ -48,7 +48,7 @@ const addTodo = (text) => (dispatch) => {
 };
 
 const toggleTodo = (id) => (dispatch) => {
-    return api.toggleTodo(id).then(response => {
+    return api.toggleTodoRemote(id).then(response => {
         return dispatch({
             type: 'TOGGLE_TODO_SUCCESS',
             response: normalize(response, todo),

@@ -3,21 +3,30 @@
  */
 
 import {v4} from 'node-uuid';
+require('isomorphic-fetch');
+
+
+const serverHost = "http://localhost:8081"
+
+
 const fakeDatabase = {
     todos: [
         {
             id: v4(),
             text: 'read this',
+            due_date: new Date().getDate(),
             finished: true
         },
         {
             id: v4(),
             text: 'write notes',
+            due_date: new Date().getDate(),
             finished: false
         },
         {
             id: v4(),
             text: 'final read',
+            due_date: new Date().getDate(),
             finished: false
         }
     ]
@@ -27,6 +36,54 @@ const delay = (ms) => {
     return new Promise((resolve) => setTimeout(resolve, ms))
 };
 
+
+export const fetchTodosRemote = (filter) => {
+    const filterParamater = '?filter='+ filter;
+    return fetch(serverHost + "/todos" + filterParamater, {
+        method: "GET",
+        headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+        }
+    }).then(response => response.json())
+};
+
+/**
+ * Creates new item representing todos
+ * @param item - item of TODOs
+ * @returns {Promise.<>|*}
+ */
+export const addTodoRemote = (item) => {
+
+    return fetch(serverHost + "/todos", {
+        method: "post",
+        headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+                text: item.text,
+                due_date: item.due_date,
+                finished: false
+            }
+        )
+    }).then(response => response.json())
+
+};
+
+export const toggleTodoRemote = (id) => {
+    return fetch(serverHost + "/todos/toggle/" + id, {
+        method: "put",
+        headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+        }
+    }).then(response => response.json())
+};
+
+
+
+
 export const fetchTodos = (filter) => {
     return delay(500).then(() => {
         // if (Math.random() > 0.5) {
@@ -35,7 +92,6 @@ export const fetchTodos = (filter) => {
 
         switch (filter) {
             case 'all' :
-
                 return fakeDatabase.todos;
             case 'active' :
                 return fakeDatabase.todos.filter((i) => (!i.finished));

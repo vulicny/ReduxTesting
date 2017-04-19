@@ -27,9 +27,9 @@ class AddTodo extends React.Component {
         this.dispatch = props.dispatch;  //get through connect
     }
 
-    addTodo(value) {
+    addTodo(item) {
         if (this.state.validation === 'success') {
-            this.dispatch(addTodo(value));
+            this.dispatch(addTodo(item));
             this.setState({validation: null});
             this.setState({value: ''});
         } else {
@@ -53,7 +53,7 @@ class AddTodo extends React.Component {
     }
 
     render() {
-        let input;
+        let input, date;
         let errorComp = 'Enter text';
         if (this.state.validation === 'error') {
             errorComp = 'Enter non-zero text';
@@ -61,18 +61,17 @@ class AddTodo extends React.Component {
 
         return (
             <div>
-                <Col xs={6} md={4}>
+                <Col xs={12} md={6}>
                     <Form inline>
                         <FormGroup
                             controlId="formBasicText"
-                            validationState={this.state.validation}
-                        >
+                            validationState={this.state.validation}>
                             <ControlLabel>Todo</ControlLabel>
                             {' '}
                             <FormControl
                                 type="text"
                                 value={this.state.value}
-                                placeholder=  {errorComp}
+                                placeholder={errorComp}
                                 inputRef={ref => {
                                     input = ref;
                                 }}
@@ -81,15 +80,31 @@ class AddTodo extends React.Component {
                             <FormControl.Feedback />
                         </FormGroup>
                         {' '}
+                        <FormGroup
+                            controlId="formBasicText">
+                            <ControlLabel>Due date</ControlLabel>
+                            {' '}
+                            <FormControl
+                                type="date"
+                                placeholder={errorComp}
+                                inputRef={ref => {
+                                    date = ref;
+                                }}
+                            />
+                        </FormGroup>
+                        {' '}
                         <Button bsStyle="primary" onClick={() => {
-                            this.addTodo(input.value);
+                            this.addTodo({
+                                text: input.value,
+                                due_date: date.value
+                            });
                         }}>Add</Button>
-                    </Form>
-                </Col>
-            </div>
+                            </Form>
+                            </Col>
+                            </div>
 
-        )
-    }
-}
-//connect by default map dispatch
-export default connect()(AddTodo);
+                            )
+                        }
+                        }
+                        //connect by default map dispatch
+                          export default connect()(AddTodo);
