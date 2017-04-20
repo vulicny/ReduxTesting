@@ -37,6 +37,11 @@ const delay = (ms) => {
 };
 
 
+/**
+ * Fetches todos based on the filter ('all'. 'active', 'completed')
+ * @param filter
+ * @returns {*|Promise.<TResult>}
+ */
 export const fetchTodosRemote = (filter) => {
     const filterParamater = '?filter='+ filter;
     return fetch(serverHost + "/todos" + filterParamater, {
@@ -68,9 +73,30 @@ export const addTodoRemote = (item) => {
             }
         )
     }).then(response => response.json())
-
 };
 
+/**
+ * Updates existing todos
+ * @param item
+ * @returns {*|Promise.<>}
+ */
+export const updateTodoRemote = (item) => {
+
+    return fetch(serverHost + "/todos/" + item.id, {
+        method: "put",
+        headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(item)
+    }).then(response => response.json())
+};
+
+/**
+ * Toogle existing todos finished property
+ * @param id
+ * @returns {*|Promise.<TResult>}
+ */
 export const toggleTodoRemote = (id) => {
     return fetch(serverHost + "/todos/toggle/" + id, {
         method: "put",

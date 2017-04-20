@@ -4,6 +4,7 @@
 
 import React from 'react';
 import {Form} from 'react-bootstrap';
+import {Table} from 'react-bootstrap'
 import {Row}  from 'react-bootstrap';
 import {Col} from 'react-bootstrap';
 import Todo from './Todo.jsx';
@@ -58,17 +59,26 @@ class TodoList extends React.Component {
             } else {
                 return (
                     <div>
-                        <Row>
-                            <Col xs={12} md={8}>
-                                <ul>
-                                    {visibleTodos.map((todo) => {
-                                        return (
-                                            <Todo key={todo.id} {...todo} toggleTodo={() => toggleTodo(todo.id)}/>
-                                        )
-                                    })}
-                                </ul>
-                            </Col>
-                        </Row>
+
+                        <Col xs={12} md={8}>
+                            <Table responsive>
+                                <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Subject</th>
+                                    <th>Due Date</th>
+                                    <th>Completed</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {visibleTodos.map((todo) => {
+                                    return (
+                                        <Todo key={todo.id} {...todo} toggleTodo={() => toggleTodo(todo.id)}/>
+                                    )
+                                })}
+                                </tbody>
+                            </Table>
+                        </Col>
                     </div>
                 )
             }

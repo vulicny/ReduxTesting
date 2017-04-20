@@ -9,8 +9,8 @@ const v4 = require('node-uuid');
 let dateFormat = require('dateformat');
 
 let app = express();
-const DATA_MASK = "mm/dd/yyyy";
-let now = dateFormat(new Date(), DATA_MASK);
+const DATE_MASK = "mm/dd/yyyy";
+let now = dateFormat(new Date(), DATE_MASK);
 
 const fakeDatabase = {
     todos: [
@@ -86,10 +86,36 @@ app.get('/todos/:id', function (request, response, next) {
 app.post('/todos', jsonParser, function (request, response, next) {
     let item = request.body;
     item.id = v4();
-    item.due_date = dateFormat(item.due_date, DATA_MASK);
+    if(item.due_date) {
+        //due date is optional
+        item.due_date = dateFormat(item.due_date, DATE_MASK);
+    }
     fakeDatabase.todos.push(item);
     console.log("add: " + item);
     response.send(item);
+});
+
+app.put('/todos/:id', jsonParser, function (request, response, next) {
+    console.log("update: " + request.params.id);
+    let item = request.body;
+    let index = fakeDatabase.todos.findIndex((value) => {
+        return (request.params.id == value.id)
+    });
+    if (index !== -1) {
+        console.log('update item: ' + fakeDatabase.todos[index]);
+        if(item.text) {
+            fakeDatabase.todos[index].text = item.text;
+        }
+        if(item.due_date) {
+            fakeDatabase.todos[index].due_date = dateFormat(item.due_date, DATE_MASK);
+        }
+        if(item.finished !== undefined) {
+            fakeDatabase.todos[index].finished = item.finished;
+        }
+        response.send(fakeDatabase.todos[index]);
+    } else {
+        response.status(404).end('Not found');
+    }
 });
 
 app.put('/todos/toggle/:id', jsonParser, function (request, response, next) {
@@ -97,7 +123,7 @@ app.put('/todos/toggle/:id', jsonParser, function (request, response, next) {
     let index = fakeDatabase.todos.findIndex((value) => {
         return (request.params.id == value.id)
     });
-    if (index != -1) {
+    if (index !== -1) {
         console.log('toggle item: ' + fakeDatabase.todos[index]);
         fakeDatabase.todos[index].finished = !fakeDatabase.todos[index].finished;
         response.send(fakeDatabase.todos[index]);
@@ -113,7 +139,7 @@ app.delete('/todos/:id', jsonParser, function (request, response, next) {
     let index = fakeDatabase.todos.findIndex((value) => {
         return (request.params.id == value.id)
     });
-    if (index != -1) {
+    if (index !== -1) {
         fakeDatabase.todos.splice(index, 1);
         response.send("Success");
     } else {
