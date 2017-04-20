@@ -16,6 +16,8 @@ const createList = (filter) => {
                 return (filter !== 'completed')
                     ? [...state, action.response.result]
                     : state;
+            case 'UPDATE_TODO_SUCCESS':
+                //handle same way as toggle (from filter list update is interesting just change of finished)
             case 'TOGGLE_TODO_SUCCESS' :
                 if(filter ==='active' && action.response.entities.todos[action.response.result].finished) {
                     //remove from active list

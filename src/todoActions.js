@@ -47,6 +47,16 @@ const addTodo = (item) => (dispatch) => {
     });
 };
 
+const updateTodo = (item) => (dispatch) => {
+
+    return api.updateTodoRemote(item).then(response => {
+        return dispatch({
+            type: 'UPDATE_TODO_SUCCESS',
+            response: normalize(response, todo),
+        });
+    });
+};
+
 const toggleTodo = (id) => (dispatch) => {
     return api.toggleTodoRemote(id).then(response => {
         return dispatch({
@@ -56,4 +66,4 @@ const toggleTodo = (id) => (dispatch) => {
     })
 };
 
-export {fetchTodos, addTodo, toggleTodo};
+export {fetchTodos, addTodo, updateTodo, toggleTodo};

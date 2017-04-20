@@ -56,7 +56,7 @@ class AddTodo extends React.Component {
         let input, date;
         let errorComp = 'Enter text';
         if (this.state.validation === 'error') {
-            errorComp = 'Enter non-zero text';
+            errorComp = 'Enter non empty text';
         }
 
         return (
