@@ -99,12 +99,12 @@ class AddTodo extends React.Component {
                                 due_date: date.value
                             });
                         }}>Add</Button>
-                            </Form>
-                            </Col>
-                            </div>
+                    </Form>
+                </Col>
+            </div>
 
-                            )
-                        }
-                        }
-                        //connect by default map dispatch
-                          export default connect()(AddTodo);
+        )
+    }
+}
+//connect by default map dispatch
+export default connect()(AddTodo);

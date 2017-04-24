@@ -66,4 +66,31 @@ const toggleTodo = (id) => (dispatch) => {
     })
 };
 
-export {fetchTodos, addTodo, updateTodo, toggleTodo};
+
+const authenticate = (credentials) => (dispatch) => {
+
+    dispatch({
+        type: 'LOGIN_REQUEST',
+        isFetching: true,
+        isAutheticated: false,
+        credentials
+    });
+
+    return api.authenticate(credentials).then(
+        response =>{
+        return dispatch({
+            type: 'LOGIN_SUCCESS',
+            isFetching: false,
+            isAutheticated: true,
+            id_token: response
+        });
+    },
+    error=> {
+        return dispatch({
+            type: 'LOGIN_FAILURE',
+            error: error.message || 'Authentication failed.',
+        });
+    })
+};
+
+export {fetchTodos, addTodo, updateTodo, toggleTodo, authenticate};

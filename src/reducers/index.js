@@ -6,6 +6,7 @@ let deepFreeze = require('deep-freeze');
 import {combineReducers} from 'redux';
 import byId, * as fromById from './byId'
 import createList, * as fromList from './createList';
+import {auth} from './auth'
 
 
 const listByFilter = combineReducers({
@@ -19,17 +20,22 @@ const todos = combineReducers({
     listByFilter,
 });
 
+const todoApp = combineReducers({
+    auth,
+    todos,
+});
+
 export const getVisibilityTodos = (state, filter) => {
-    const ids = fromList.getIds(state.listByFilter[filter]);
-    return ids.map((id) => fromById.getTodo(state.byId, id));
+    const ids = fromList.getIds(state.todos.listByFilter[filter]);
+    return ids.map((id) => fromById.getTodo(state.todos.byId, id));
 };
 
-export const getIsFetching = (state, filter)  => {
-  return fromList.isFetching(state.listByFilter[filter]);
+export const getIsFetching = (state, filter) => {
+    return fromList.isFetching(state.todos.listByFilter[filter]);
 };
 
 export const getError = (state, filter) => {
-    return fromList.getError(state.listByFilter[filter])
+    return fromList.getError(state.todos.listByFilter[filter])
 
 };
 
@@ -94,5 +100,5 @@ const testToggleTodo = () => {
 
 console.log('All tests passed.');
 
-export {todos};
+export {todoApp};
 
