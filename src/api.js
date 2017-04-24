@@ -108,6 +108,16 @@ export const toggleTodoRemote = (id) => {
 };
 
 
+export const authenticate =  (credentials) => {
+    return fetch(serverHost + "/login", {
+        method: "post",
+        headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(credentials)
+    }).then(response => response.json())
+};
 
 
 export const fetchTodos = (filter) => {

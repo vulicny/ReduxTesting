@@ -18,6 +18,7 @@ import {MenuItem} from 'react-bootstrap';
 import {LinkContainer} from 'react-router-bootstrap';
 import FilterLink from './FilterLink.jsx'
 import {withRouter} from 'react-router';
+import {connect} from 'react-redux';
 
 
 class AppHeader extends React.Component {
@@ -35,6 +36,8 @@ class AppHeader extends React.Component {
     }
 
     render() {
+        const {isAuthenticated} = this.props;
+
 
         return (
             <div>
@@ -44,15 +47,23 @@ class AppHeader extends React.Component {
                         <Navbar.Toggle />
                     </Navbar.Header>
                     <Navbar.Collapse>
-                        <Nav>
-                            <NavItem eventKey={1} onClick={() => this.handleLink("/")}>All</NavItem>
-                            <NavItem eventKey={2} onClick={() => this.handleLink("completed")}>Completed</NavItem>
-                            <NavItem eventKey={3} onClick={() => this.handleLink("active")}>Active</NavItem>
-                        </Nav>
+                        {isAuthenticated &&
+                        <div>
+                            <Nav >
+                                <NavItem eventKey={1} onClick={() => this.handleLink("/")}>All</NavItem>
+                                <NavItem eventKey={2} onClick={() => this.handleLink("completed")}>Completed</NavItem>
+                                <NavItem eventKey={3} onClick={() => this.handleLink("active")}>Active</NavItem>
+                            </Nav>
+                            <Nav pullRight>
+                                <NavItem eventKey={4} onClick={() => this.handleLink("/logout")}>Logout</NavItem>
+                            </Nav>
+                        </div>
+                        }
+                        {!isAuthenticated &&
                         <Nav pullRight>
-                            <NavItem eventKey={4} href="#">Login</NavItem>
-
+                            <NavItem eventKey={4} onClick={() => this.handleLink("/login")}>Login</NavItem>
                         </Nav>
+                        }
                     </Navbar.Collapse>
                 </Navbar>
 
@@ -61,4 +72,11 @@ class AppHeader extends React.Component {
     }
 }
 
-export default withRouter(AppHeader);
+const mapStateToProps = (state, ownProps) => {
+    return {
+        isAuthenticated: state.auth.isAutheticated
+    }
+};
+
+
+export default withRouter(connect(mapStateToProps)(AppHeader));

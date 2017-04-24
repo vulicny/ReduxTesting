@@ -3,27 +3,10 @@
  */
 import {createStore, applyMiddleware} from 'redux';
 import thunk from 'redux-thunk';
-import {todos} from './reducers/index.js';
+import {todoApp} from './reducers/index.js';
 
 import logger from 'redux-logger';
 
-/*
-const thunk = (store) => (next) => (action) => {
-  if(typeof action ==='function') {
-      return action(store.dispatch, store.getState);
-  } else {
-      return next(action);
-  }
-};
-
-
-const wrapDispatchWithMiddlewares = (store, middlewares) => {
-    middlewares.slice().reverse().forEach((middleware) => {
-        store.dispatch = middleware(store);
-    })
-};
-
-*/
 
 const configureStore = () => {
 
@@ -32,12 +15,11 @@ const configureStore = () => {
         if (process.env.NODE_ENV !== 'production') {
             middlewares.push(logger)
         }
-        let store = createStore(
-            todos,
+
+        return createStore(
+            todoApp,
             applyMiddleware(...middlewares)
         );
-
-        return store;
     }
 ;
 

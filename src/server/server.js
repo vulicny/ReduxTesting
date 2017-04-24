@@ -17,7 +17,7 @@ const fakeDatabase = {
         {
             id: v4(),
             text: 'read this',
-            due_date:  now,
+            due_date: now,
             finished: true
         },
         {
@@ -36,6 +36,12 @@ const fakeDatabase = {
     ]
 };
 
+let users = [{
+    id: v4(),
+    userName: 'admin',
+    password: 'changeit',
+}
+];
 
 // create application/json parser
 var jsonParser = bodyParser.json();
@@ -45,6 +51,27 @@ app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
     next();
+});
+
+const authenticate = (userName, password, callback) => {
+    const index = users.findIndex((user)=>userName === user.userName && password === user.password);
+    if(index !== -1) {
+        callback(users[index].id);
+    } else {
+        callback(null);
+    }
+};
+
+app.post('/login', jsonParser, function (request, response, next) {
+    authenticate(request.body.userName, request.body.password, function (userId) {
+        if(userId) {
+            response.send({
+                id_token: userId
+            });
+        } else {
+            response.status(401).end();
+        }
+    })
 });
 
 app.get('/', function (request, response, next) {
@@ -86,7 +113,7 @@ app.get('/todos/:id', function (request, response, next) {
 app.post('/todos', jsonParser, function (request, response, next) {
     let item = request.body;
     item.id = v4();
-    if(item.due_date) {
+    if (item.due_date) {
         //due date is optional
         item.due_date = dateFormat(item.due_date, DATE_MASK);
     }
@@ -103,13 +130,13 @@ app.put('/todos/:id', jsonParser, function (request, response, next) {
     });
     if (index !== -1) {
         console.log('update item: ' + fakeDatabase.todos[index]);
-        if(item.text) {
+        if (item.text) {
             fakeDatabase.todos[index].text = item.text;
         }
-        if(item.due_date) {
+        if (item.due_date) {
             fakeDatabase.todos[index].due_date = dateFormat(item.due_date, DATE_MASK);
         }
-        if(item.finished !== undefined) {
+        if (item.finished !== undefined) {
             fakeDatabase.todos[index].finished = item.finished;
         }
         response.send(fakeDatabase.todos[index]);
@@ -146,6 +173,7 @@ app.delete('/todos/:id', jsonParser, function (request, response, next) {
         response.status(404).end('Not found');
     }
 });
+
 
 let server = app.listen(8081, function () {
     let host = server.address().address;
