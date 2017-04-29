@@ -66,6 +66,7 @@ class Todo extends React.Component {
                 // update just due_date
                 due_date: dateFormat(value, 'mm/dd/yyyy'),
             });
+            this.setState({editDue_date: false});
         }
     }
 
@@ -73,7 +74,9 @@ class Todo extends React.Component {
         console.log("Mouse Out");
         this.setState({editText: false});
         this.setState({text:this.state.text_original});
-        this.setState({editDue_date: false});
+ //       if(e.target.name === 'due_date') {
+ //           this.setState({editDue_date: false});
+ //       }
     }
 
     onKeyPress(e) {
@@ -137,6 +140,7 @@ class Todo extends React.Component {
                    autoFocus
                    onKeyPress={this.onKeyPress}
                    onChange={this.onChange}
+                   onMouseOut={this.onMouseOut}
                    onKeyDown={this.onKeyPress}
                    value={this.state.due_date}/> :
             this.state.due_date;
@@ -159,7 +163,7 @@ class Todo extends React.Component {
                 <td style={{
                     width: "300px",
                 }} onDoubleClick={() => this.edit(true, 'editDue_date')}
-                    onMouseLeave={this.onMouseOut}>{due_dateComponent}</td>
+                    >{due_dateComponent}</td>
                 <td>{done}</td>
             </tr>
 
