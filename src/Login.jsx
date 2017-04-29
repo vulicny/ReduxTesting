@@ -72,11 +72,8 @@ class Login extends React.Component {
                                 </ButtonToolbar>
                             </Col>
                         </FormGroup>
-
                     </Form>
                 </Col>
-
-
             </div>
         )
     }
