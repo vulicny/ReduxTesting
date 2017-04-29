@@ -1,2 +1,2 @@
 # ReduxTesting
-Redux testing - simple Todo list with React and Redux
+Ract & Redux testing - simple Todo list with React, Redux and Boostrap. 
